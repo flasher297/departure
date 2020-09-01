@@ -10,7 +10,7 @@
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
     <uk.departure.dashboard.SpeedometerView
-        android:id="@+id/fullscreen_content"
+        android:id="@+id/speedometer_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"

@@ -7,14 +7,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateInterpolator
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.math.abs
-import kotlin.math.sin
-import kotlin.math.sqrt
-
 
 class SpeedometerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -40,30 +33,6 @@ class SpeedometerView @JvmOverloads constructor(
     val mTextPaths = mutableListOf<Path>()
 
     var mph: Float = 0.0f
-
-    init {
-
-        GlobalScope.launch(Dispatchers.Main) {
-            var startTime = 0L
-
-            while (true) {
-                delay(100)
-                val radian = Math.toRadians(startTime.toDouble())
-                val coef = abs(
-                    (
-                            sin(8 * radian) + sin(0.4 * sqrt(radian))) / 2
-                )
-                updateRelatively(coef.toFloat().coerceIn(0f, 1f))
-                startTime++
-            }
-
-
-        }
-
-    }
-
-
-    private val path = Path()
 
     var arcPath: Path? = null
     val oval = RectF()
