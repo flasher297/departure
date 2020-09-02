@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import kotlin.math.abs
@@ -26,7 +27,6 @@ class SpeedometerView @JvmOverloads constructor(
         color = Color.GREEN
         textSize = 80f
         textAlign = Paint.Align.CENTER
-
     }
 
 
@@ -169,7 +169,9 @@ class SpeedometerView @JvmOverloads constructor(
         // TODO: onAttach or on size change all object allocations
 
 
-        canvas?.drawPath(arcPath!!, paintArch)
+        if (arcPath != null) {
+            canvas?.drawPath(arcPath!!, paintArch)
+        }
 
         val barh = height * 0.5f
 
@@ -197,6 +199,10 @@ class SpeedometerView @JvmOverloads constructor(
         mph = it
         invalidate()
     }
+    var doOnLeft: () -> Unit = {}
+    var doOnRight: () -> Unit = {
+
+    }
 
     fun setValue(n: Float) {
         _val = n
@@ -221,5 +227,45 @@ class SpeedometerView @JvmOverloads constructor(
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         animator?.end()
+    }
+
+
+    private val NONE = 0
+    private val SWIPE = 1
+    private var mode = NONE
+    private var startX = 0f
+    private var stopX = 0f
+
+    // We will only detect a swipe if the difference is at least 100 pixels
+    // Change this value to your needs
+    private val TRESHOLD = 100
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (event == null) false
+        when (event!!.action and MotionEvent.ACTION_MASK) {
+            MotionEvent.ACTION_POINTER_DOWN -> {
+                // This happens when you touch the screen with two fingers
+                mode = SWIPE
+                // You can also use event.getY(1) or the average of the two
+                startX = event.getX(0)
+            }
+            MotionEvent.ACTION_POINTER_UP -> {
+                // This happens when you release the second finger
+                mode = NONE
+                if (abs(startX - stopX) > TRESHOLD) {
+                    if (startX > stopX) {
+                        doOnLeft()
+                    } else {
+                        //Swipe down
+                        doOnRight()
+                    }
+                }
+                mode = NONE
+            }
+            MotionEvent.ACTION_MOVE -> if (mode == SWIPE) {
+                stopX = event.getX(0)
+            }
+        }
+        return true
     }
 }

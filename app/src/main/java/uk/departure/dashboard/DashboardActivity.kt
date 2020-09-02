@@ -11,6 +11,7 @@ import android.os.RemoteException
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.motion.widget.MotionLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,8 @@ import kotlinx.coroutines.launch
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var speedometerView: SpeedometerView
+    private lateinit var tachometerView: SpeedometerView
+    private lateinit var root: MotionLayout
 
     private val engineOutPut = MutableStateFlow(0.0f)
     val engineOutPut2: StateFlow<Float>
@@ -43,7 +46,17 @@ class DashboardActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_fullscreen)
 
+        root = findViewById(R.id.motionLayout)
         speedometerView = findViewById(R.id.speedometer_view)
+        tachometerView = findViewById(R.id.tachometer_view)
+        // TOOD: proper callbacks
+        speedometerView.doOnLeft = {
+            root.transitionToEnd()
+        }
+        tachometerView.doOnRight = {
+            root.transitionToStart()
+            // TODO: separate transitions for left and right
+        }
 
         makeFullScreenNonSleep()
         startService()
@@ -82,7 +95,6 @@ class DashboardActivity : AppCompatActivity() {
                 // disconnected (and then reconnected if it can be restarted)
                 // so there is no need to do anything here.
             }
-
         }
 
         override fun onServiceDisconnected(className: ComponentName) {
