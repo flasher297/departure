@@ -1,8 +1,14 @@
 <resources>
 
-    <declare-styleable name="ButtonBarContainerTheme">
-        <attr name="metaButtonBarStyle" format="reference" />
-        <attr name="metaButtonBarButtonStyle" format="reference" />
+    <declare-styleable name="DialDisplay">
+        <attr name="dialBackground" format="color" />
+        <attr name="patternColor" format="color" />
+        <attr name="digitsFont" format="string" />
+        <attr name="digitsFontSize" format="dimension" />
+        <attr name="dialType" format="enum">
+            <enum name="speed" value="0"/>
+            <enum name="rotation" value="1"/>
+        </attr>
     </declare-styleable>
 
 </resources>

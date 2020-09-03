@@ -13,12 +13,13 @@
         <service
             android:name=".EngineService"
             android:enabled="true"
-            android:process=":independentProcess"
-            android:exported="false" />
+            android:exported="false"
+            android:process=":independentProcess" />
 
         <activity
             android:name=".DashboardActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

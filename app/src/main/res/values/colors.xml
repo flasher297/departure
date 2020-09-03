@@ -3,6 +3,9 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">@color/white_overlay</color>
-    <color name="black_overlay">#66000000</color>
+    <color name="black">#000000</color>
+    <color name="brown">#8E5603</color>
     <color name="white_overlay">#FFFFFF</color>
+    <color name="yellow_light">#E8990C</color>
+    <color name="boston_blue">#428BCA</color>
 </resources>

@@ -22,8 +22,8 @@ import kotlinx.coroutines.launch
 
 class DashboardActivity : AppCompatActivity() {
 
-    private lateinit var speedometerView: SpeedometerView
-    private lateinit var tachometerView: SpeedometerView
+    private lateinit var speedometerView: DialDisplayView
+    private lateinit var tachometerView: DialDisplayView
     private lateinit var root: MotionLayout
 
     private val engineOutPut = MutableStateFlow(0.0f)
@@ -49,11 +49,10 @@ class DashboardActivity : AppCompatActivity() {
         root = findViewById(R.id.motionLayout)
         speedometerView = findViewById(R.id.speedometer_view)
         tachometerView = findViewById(R.id.tachometer_view)
-        // TOOD: proper callbacks
-        speedometerView.doOnLeft = {
+        speedometerView.doOnLeftSwipe = {
             root.transitionToEnd()
         }
-        tachometerView.doOnRight = {
+        tachometerView.doOnRightSwipe = {
             root.transitionToStart()
             // TODO: separate transitions for left and right
         }
