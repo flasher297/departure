@@ -1,4 +1,4 @@
-package uk.departure.dashboard
+package uk.departure.dashboard.presentation
 
 import android.animation.Animator
 import android.animation.ValueAnimator
@@ -9,11 +9,13 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import androidx.annotation.IntDef
-import uk.departure.dashboard.DialDisplayView.DialType.Companion.ROTATOR
-import uk.departure.dashboard.DialDisplayView.DialType.Companion.SPEED
-import uk.departure.dashboard.DialDisplayView.SwipeState.Companion.NONE
-import uk.departure.dashboard.DialDisplayView.SwipeState.Companion.SWIPE
-import uk.departure.dashboard.font.FontCache
+import uk.departure.dashboard.R
+import uk.departure.dashboard.presentation.helper.dpToPxFloat
+import uk.departure.dashboard.presentation.DialDisplayView.DialType.Companion.ROTATOR
+import uk.departure.dashboard.presentation.DialDisplayView.DialType.Companion.SPEED
+import uk.departure.dashboard.presentation.DialDisplayView.SwipeState.Companion.NONE
+import uk.departure.dashboard.presentation.DialDisplayView.SwipeState.Companion.SWIPE
+import uk.departure.dashboard.presentation.helper.font.FontCache
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -160,7 +162,8 @@ class DialDisplayView @JvmOverloads constructor(
         val oval = RectF().apply {
             set(cx - radius, cy - radius, cx + radius, cy + radius)
         }
-        arcPath?.arcTo(oval, -EDGE_ANGLE, EDGE_ANGLE, true)
+        arcPath?.arcTo(oval, -EDGE_ANGLE,
+            EDGE_ANGLE, true)
     }
 
     private fun createTextPaths() {

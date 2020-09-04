@@ -1,4 +1,4 @@
-package uk.departure.dashboard.font
+package uk.departure.dashboard.presentation.helper.font
 
 import android.content.Context
 import android.graphics.Typeface
@@ -12,9 +12,12 @@ object FontCache {
     private const val FONTS_DIR = "fonts/"
     private val fontCache: MutableMap<String, Typeface?> = HashMap()
 
-    // TODO: Support other types of fonts, not only regular
+    // TODO: Support other types of fonts, not only Regular
     fun selectTypeface(context: Context, fontName: String): Typeface? {
-        return getTypeface("$fontName-Regular.ttf", context)
+        return getTypeface(
+            "$fontName-Regular.ttf",
+            context
+        )
     }
 
     private fun getTypeface(fontName: String, context: Context): Typeface? {

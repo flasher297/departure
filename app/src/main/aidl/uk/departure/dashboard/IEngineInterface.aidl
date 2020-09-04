@@ -4,7 +4,7 @@ import uk.departure.dashboard.IEngineCallback;
 
 interface IEngineInterface {
 
-    void registerCallback(IEngineCallback cb);
+    void registerOutcomeCallback(IEngineCallback cb);
 
-    void unregisterCallback(IEngineCallback cb);
+    void unregisterOutcomeCallback(IEngineCallback cb);
 }

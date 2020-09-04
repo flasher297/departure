@@ -2,6 +2,7 @@ package uk.departure.dashboard;
 
 interface IEngineCallback {
 
-    oneway void valueChanged(float value);
+    //Receives engine current output between 0 (min) an 1 (100%)
+    oneway void outputPower(float value);
 
 }
