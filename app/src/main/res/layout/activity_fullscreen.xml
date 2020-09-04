@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
     app:layoutDescription="@xml/dashboard_transition"
-    app:motionDebug="SHOW_ALL"
+    app:motionDebug="NO_DEBUG"
     tools:context=".presentation.DashboardActivity"
     tools:showPaths="true">
 
