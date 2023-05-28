@@ -9,19 +9,21 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import androidx.annotation.IntDef
+import androidx.core.animation.doOnEnd
 import uk.departure.dashboard.R
-import uk.departure.dashboard.presentation.helper.dpToPxFloat
 import uk.departure.dashboard.presentation.DialDisplayView.DialType.Companion.ROTATOR
 import uk.departure.dashboard.presentation.DialDisplayView.DialType.Companion.SPEED
 import uk.departure.dashboard.presentation.DialDisplayView.SwipeState.Companion.NONE
 import uk.departure.dashboard.presentation.DialDisplayView.SwipeState.Companion.SWIPE
+import uk.departure.dashboard.presentation.helper.dpToPxFloat
 import uk.departure.dashboard.presentation.helper.font.FontCache
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
-private const val SWIPE_THRESHOLD_PX = 100
 private const val EDGE_ANGLE = 180f
+// To disable diagonal swipes
+private const val Y_THRESHOLD = 0.2f
 
 class DialDisplayView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -80,13 +82,17 @@ class DialDisplayView @JvmOverloads constructor(
 
     // Always between 0 and 1
     private var dialValue: Float = 0f
+    private var lastReceivedValue: Float = 0f
 
     //We use ValueAnimator that with help of choreographer sync animations calls with draw calls
     private var animator: Animator? = null
 
     // Swipe helper fields
     private var swipeStartX = 0f
+    private var swipeStartY = 0f
     private var swipeStopX = 0f
+    private var swipeStopY = 0f
+    private val minSwipeDiff:Float
 
     @SwipeState
     private var mode = NONE
@@ -127,10 +133,10 @@ class DialDisplayView @JvmOverloads constructor(
                 textAlign = Paint.Align.CENTER
             }
         }
+        minSwipeDiff = context.resources.getDimension(R.dimen.min_swipe)
     }
 
     // TODO: Magic numbers - room for improvement
-
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         radius = width * 0.45f
@@ -318,16 +324,26 @@ class DialDisplayView @JvmOverloads constructor(
      * Start animation only with delta with current value
      */
     fun updateRelatively(newValue: Float) {
+        lastReceivedValue = newValue
         if (animator?.isRunning == true) {
             return
         }
-        val delta = dialValue - newValue
-        animator = ValueAnimator.ofFloat(dialValue, newValue).apply {
+        startAnimation()
+    }
+
+    private fun startAnimation() {
+        val delta = dialValue - lastReceivedValue
+        animator = ValueAnimator.ofFloat(dialValue, lastReceivedValue).apply {
             duration = (abs(delta) * 300L).toLong()
             interpolator = AccelerateInterpolator()
             addUpdateListener {
                 dialValue = it.animatedValue as Float
                 invalidate()
+            }
+            doOnEnd {
+                if (dialValue != lastReceivedValue) {
+                    startAnimation()
+                }
             }
             start()
         }
@@ -346,10 +362,13 @@ class DialDisplayView @JvmOverloads constructor(
             MotionEvent.ACTION_POINTER_DOWN -> { // This happens when you touch the screen with second finger
                 mode = SWIPE
                 swipeStartX = event.getX(0) // We need a diff so can use any pointerIndex
+                swipeStartY = event.getY(0)
             }
             MotionEvent.ACTION_POINTER_UP -> { // This happens when you release the second finger
                 mode = NONE
-                if (abs(swipeStartX - swipeStopX) > SWIPE_THRESHOLD_PX) {
+                val xDiff = abs(swipeStartX - swipeStopX)
+                if (xDiff > minSwipeDiff &&
+                    abs(swipeStartY - swipeStopY) < xDiff * Y_THRESHOLD) {
                     if (swipeStartX > swipeStopX) {
                         doOnLeftSwipe()
                     } else {
@@ -360,6 +379,7 @@ class DialDisplayView @JvmOverloads constructor(
             }
             MotionEvent.ACTION_MOVE -> if (mode == SWIPE) {
                 swipeStopX = event.getX(0)
+                swipeStopY = event.getY(0)
             }
         }
         return true

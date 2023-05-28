@@ -12,12 +12,10 @@ class App : Application() {
         setUpKoin()
     }
 
-
     private fun setUpKoin() {
         startKoin {
             androidContext(this@App)
             modules(listOf(appModule))
         }
     }
-
 }

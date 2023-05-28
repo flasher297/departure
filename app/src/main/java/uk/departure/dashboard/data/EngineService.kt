@@ -48,7 +48,7 @@ class EngineService : Service() {
         }
         engineJob = serviceScope.launch {
             var startTime = 0L
-            while (true) {
+            while (isActive) {
                 delay(100)  // delay() stops eternal loop on coroutine cancellation
                 val radian = Math.toRadians(startTime.toDouble())
                 val coef = abs((sin(8 * radian) + sin(0.4 * sqrt(radian))) / 2)
